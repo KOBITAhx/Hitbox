@@ -1,26 +1,30 @@
 local Players = game:GetService("Players")
+local ChatService = game:GetService("Chat")
 
-function doubleSize(player)
+-- Mensaje al ejecutarse
+local message = "¡Prepárate para una experiencia épica con hitboxes aumentadas!"
+
+-- Función para aumentar x5 la hitbox del arma y objeto equipado
+function increaseWeaponHitbox(player)
     local character = player.Character
-    if character and player ~= Players.LocalPlayer then
+    if character then
         local humanoid = character:FindFirstChildOfClass("Humanoid")
 
         if humanoid then
-            humanoid:SetScale(Vector3.new(2, 2, 2))
+            local tool = humanoid:FindFirstChildOfClass("Tool")
+            if tool then
+                tool.Size = Vector3.new(tool.Size.X * 5, tool.Size.Y * 5, tool.Size.Z * 5)
+                
+                -- Mostrar el mensaje
+                ChatService:Chat(player.Character.Head, message, Enum.ChatColor.Blue)
+            end
         end
     end
 end
 
+-- Conectar la función a eventos relevantes
 Players.PlayerAdded:Connect(function(player)
     player.CharacterAdded:Connect(function()
-        doubleSize(player)
+        increaseWeaponHitbox(player)
     end)
-    
-    wait(2)
-    doubleSize(player)
 end)
-
-Players.PlayerRespawned:Connect(function(player)
-    wait(1)
-    doubleSize(player)
-  end)
